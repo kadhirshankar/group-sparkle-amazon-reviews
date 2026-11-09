@@ -1,0 +1,37 @@
+# Local environment and credentials
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+# Data: only instructions belong in Git
+/data/*
+!/data/README.md
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.sqlite
+*.sqlite3
+*.db
+*.jsonl
+*.zip
+*.gz
+# Trained binaries and generated outputs
+/models/*
+!/models/README.md
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.h5
+*.keras
+*.onnx
+outputs/
