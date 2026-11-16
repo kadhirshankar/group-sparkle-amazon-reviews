@@ -12,7 +12,7 @@ We plan to compare machine learning models for classifying Amazon food reviews a
 | Alex Kull | |
 | Hrushi Murukuti | |
 | Kaedon Moore | |
-| Parker Lemery | |
+| Parker Lemery | Deep Learning Engineer |
 | Kadhir Shankar | App Engineer |
 
 ## Dataset
