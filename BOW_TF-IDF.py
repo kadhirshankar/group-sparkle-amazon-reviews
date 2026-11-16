@@ -41,6 +41,7 @@ lrm = LogisticRegression(max_iter=1000)
 lrm.fit(X_bow, y)
 feature_names = np.array(bow_vectorizer.get_feature_names_out())
 coefficients = lrm.coef_[0]
+vocab_words_bow = list(bow_vectorizer.vocabulary_.keys())
 
 #most positive features BOW
 top_positive_indices = np.argsort(coefficients)[-10:][::-1]
@@ -69,6 +70,7 @@ plt.show()
 lrm.fit(X_tfidf, y)
 feature_names = np.array(tfidf_vectorizer.get_feature_names_out())
 coefficients = lrm.coef_[0]
+vocab_words_tfidf = list(tfidf_vectorizer.vocabulary_.keys())
 
 #most positive features TF-IDF
 top_positive_indices = np.argsort(coefficients)[-10:][::-1]
@@ -93,3 +95,8 @@ plt.tight_layout()
 plt.savefig('top_positive_features.png')
 plt.show()
 
+output_df = pd.DataFrame({
+    'Vocab Words BOW': vocab_words_bow,
+    'Vocab Words TF-IDF': vocab_words_tfidf
+})
+output_df.to_csv('data/processed_reviews.csv', index=False)
