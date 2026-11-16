@@ -26,7 +26,7 @@ When no trained models are present, the app shows a clear pending state and disa
 3. Save the trained pipelines to the artifact locations specified in config/model_registry.json. Example:
 
         import joblib
-        joblib.dump(fitted_pipeline, "models/logistic_regression_pipeline.joblib")
+        joblib.dump(fitted_pipeline, "models/logistic_regression_tfidf_pipeline.joblib")
 
 4. **Confirm binary versus three-class sentiment.** The earlier feature-engineering pull request dropped 3-star reviews, but M1 proposed three classes. The model registry must match the training labels before connecting models.
 

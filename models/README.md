@@ -3,3 +3,8 @@
 Save trained models here. Model files are excluded from GitHub.
 
 Each model should accept review text and return a sentiment label. Save its preprocessing steps with it and record the label order, training settings, and evaluation results.
+
+The training scripts create these local artifacts:
+
+- `multinomial_naive_bayes_bow_pipeline.joblib`
+- `logistic_regression_tfidf_pipeline.joblib`

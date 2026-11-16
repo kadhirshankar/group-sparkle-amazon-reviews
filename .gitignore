@@ -1,5 +1,7 @@
 # Local environment and credentials
 .venv/
+.uv-cache/
+.matplotlib-cache/
 venv/
 .env
 .env.*

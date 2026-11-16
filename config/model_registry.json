@@ -1,19 +1,19 @@
 {
   "models": [
     {
-      "id": "naive_bayes",
-      "name": "Naive Bayes",
+      "id": "multinomial_naive_bayes_bow",
+      "name": "Multinomial Naive Bayes (BoW)",
       "feature": "Bag of Words",
       "description": "Classical probabilistic baseline",
-      "artifact": "models/naive_bayes_pipeline.joblib",
+      "artifact": "models/multinomial_naive_bayes_bow_pipeline.joblib",
       "label_map": {}
     },
     {
-      "id": "logistic_regression",
-      "name": "Logistic Regression",
+      "id": "logistic_regression_tfidf",
+      "name": "Logistic Regression (TF-IDF)",
       "feature": "TF-IDF",
       "description": "Linear classification baseline",
-      "artifact": "models/logistic_regression_pipeline.joblib",
+      "artifact": "models/logistic_regression_tfidf_pipeline.joblib",
       "label_map": {}
     }
   ]
