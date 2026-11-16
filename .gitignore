@@ -11,7 +11,9 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 # Data: only instructions belong in Git
+/data/*
 !/data/README.md
+*.csv
 *.tsv
 *.parquet
 *.arrow
