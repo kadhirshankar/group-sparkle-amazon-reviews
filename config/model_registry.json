@@ -1,0 +1,20 @@
+{
+  "models": [
+    {
+      "id": "naive_bayes",
+      "name": "Naive Bayes",
+      "feature": "Bag of Words",
+      "description": "Classical probabilistic baseline",
+      "artifact": "models/naive_bayes_pipeline.joblib",
+      "label_map": {}
+    },
+    {
+      "id": "logistic_regression",
+      "name": "Logistic Regression",
+      "feature": "TF-IDF",
+      "description": "Linear classification baseline",
+      "artifact": "models/logistic_regression_pipeline.joblib",
+      "label_map": {}
+    }
+  ]
+}
