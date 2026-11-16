@@ -8,11 +8,11 @@ We plan to compare machine learning models for classifying Amazon food reviews a
 
 | Member | Role |
 | --- | --- |
-| Adam Spacone | |
-| Alex Kull | |
-| Hrushi Murukuti | |
-| Kaedon Moore | |
-| Parker Lemery | |
+| Adam Spacone | Analyst/Writer |
+| Alex Kull | Classical ML Engineer |
+| Hrushi Murukuti | Project Lead |
+| Kaedon Moore | Data Engineer |
+| Parker Lemery | Deep Learning Engineer |
 | Kadhir Shankar | App Engineer |
 
 ## Dataset
