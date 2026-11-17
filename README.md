@@ -21,7 +21,7 @@ We plan to compare machine learning models for classifying Amazon food reviews a
 
 - Sample size: 50,000 reviews
 - Sampling seed: 49
-- Use the instructor's sampling script.
+- Create the sample with `python scripts/prepare_data.py` (reproduces the instructor's seed-49 sample exactly from Kaggle's `Reviews.csv`).
 - Dataset files are kept locally and are not uploaded to GitHub.
 
 ## Proposed Approach
@@ -49,13 +49,13 @@ We plan to compare machine learning models for classifying Amazon food reviews a
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt   # exact versions are pinned so results match across machines
 python -m streamlit run app.py
 ```
 
 On Windows, activate with `.venv\Scripts\activate`.
 
-The app currently displays a starter page.
+The app loads the trained models listed in `config/model_registry.json`. Run the Milestone 2 commands below first so the model files exist in `models/`.
 
 ## Reproduce Milestone 2
 
