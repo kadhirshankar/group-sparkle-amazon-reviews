@@ -31,7 +31,11 @@ def score_to_sentiment(score):
 #load the sample, remove duplicate reviews, then split 80/20 (stratified, seed 49)
 def load_and_split(path):
     df = pd.read_csv(path)
-    df = df.drop_duplicates(subset='Text')
+    required = {'Score', 'Text'}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"Dataset is missing required columns: {sorted(missing)}")
+    df = df.dropna(subset=['Text']).drop_duplicates(subset='Text').copy()
     df['sentiment'] = df['Score'].apply(score_to_sentiment)
     train, test = train_test_split(df, test_size=0.2, stratify=df['sentiment'], random_state=49)
     return train, test
@@ -43,4 +47,6 @@ def make_vectorizer(kind):
                     ngram_range=(1, 2), max_features=10000)
     if kind == 'bow':
         return CountVectorizer(**settings)
-    return TfidfVectorizer(**settings)
+    if kind == 'tfidf':
+        return TfidfVectorizer(**settings)
+    raise ValueError("kind must be 'bow' or 'tfidf'")

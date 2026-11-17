@@ -57,6 +57,17 @@ On Windows, activate with `.venv\Scripts\activate`.
 
 The app currently displays a starter page.
 
+## Reproduce Milestone 2
+
+After placing the Kaggle `Reviews.csv` file in `data/`, run:
+
+```sh
+python scripts/prepare_data.py
+python scripts/train_m2_baselines.py
+```
+
+The training command evaluates Naive Bayes with Bag of Words and Logistic Regression with TF-IDF against a majority-class baseline on the same held-out test set. It writes metrics, class reports, confusion matrices, informative-feature charts, and ten reproducible misclassified examples to `outputs/m2/`.
+
 ## Links
 
 **Shared document:**
