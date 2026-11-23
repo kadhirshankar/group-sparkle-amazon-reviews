@@ -55,7 +55,9 @@ python -m streamlit run app.py
 
 On Windows, activate with `.venv\Scripts\activate`.
 
-The app loads the trained models listed in `config/model_registry.json`. Run the Milestone 2 commands below first so the model files exist in `models/`.
+`requirements.txt` includes PyTorch (`torch`), which is used to train the neural network model. It is a large download (a few hundred MB), so the first install takes a few minutes. Training runs on the CPU; no GPU is needed.
+
+The app loads the trained models listed in `config/model_registry.json`. Run the Milestone 2 and Milestone 3 commands below first so the model files exist in `models/`.
 
 ## Reproduce Milestone 2
 
@@ -67,6 +69,18 @@ python scripts/train_m2_baselines.py
 ```
 
 The training command evaluates Naive Bayes with Bag of Words and Logistic Regression with TF-IDF against a majority-class baseline on the same held-out test set. It writes metrics, class reports, confusion matrices, informative-feature charts, and ten reproducible misclassified examples to `outputs/m2/`.
+
+## Reproduce Milestone 3: Neural Network
+
+After creating the sample above, run:
+
+```sh
+python scripts/train_neural_network.py
+```
+
+This trains a feedforward neural network in PyTorch on the same TF-IDF features and is tested on the same 20% test set as the baselines. 10% of the training set is held out for validation and early stopping, so the network trains on 72% of the data while the baselines train on the full 80%. The command takes about 10 seconds on a laptop CPU and writes metrics, a class report, a confusion matrix, and training/validation loss curves to `outputs/m3/`. It saves the model to `models/feedforward_nn_tfidf_pipeline.joblib`.
+
+The saved model stores the network's weights as NumPy arrays, so the Streamlit app runs it with NumPy and does not need PyTorch installed. PyTorch is only needed for training.
 
 ## Links
 

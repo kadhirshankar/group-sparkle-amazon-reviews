@@ -16,4 +16,10 @@ python scripts/train_naive_bayes.py
 python scripts/train_logistic_regression.py
 ```
 
+Train the Milestone 3 feedforward neural network (PyTorch). It writes results to `outputs/m3/` and the model to `models/`:
+
+```sh
+python scripts/train_neural_network.py
+```
+
 The generated model pipelines and report artifacts are intentionally excluded from Git.

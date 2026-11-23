@@ -16,3 +16,9 @@ reviews leaking across the train/test split, HTML tags in the text, and negation
 words removed by the default stop-word list) and to implement the shared
 preprocessing in `src/text_preprocessing.py`. The fixes were reviewed and
 verified by the team.
+
+## Feedforward neural network (Milestone 3)
+
+AI assistance (Claude Code) was used to install PyTorch and to help write the
+neural network code, its training script, and its tests. All results come from
+actually running the code; none were made up.

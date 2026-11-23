@@ -15,6 +15,14 @@
       "description": "Linear classification baseline",
       "artifact": "models/logistic_regression_tfidf_pipeline.joblib",
       "label_map": {}
+    },
+    {
+      "id": "feedforward_nn_tfidf",
+      "name": "Feedforward Neural Network (TF-IDF)",
+      "feature": "TF-IDF",
+      "description": "Two hidden layers (256, 64), trained in PyTorch",
+      "artifact": "models/feedforward_nn_tfidf_pipeline.joblib",
+      "label_map": {}
     }
   ]
 }
