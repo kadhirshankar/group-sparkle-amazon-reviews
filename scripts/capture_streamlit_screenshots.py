@@ -34,11 +34,11 @@ with sync_playwright() as playwright:
 
     page.get_by_role("tab", name="Dataset & model results").click()
     page.get_by_text("Macro F1 by model", exact=True).wait_for(timeout=40000)
+    # The Streamlit main view scrolls independently from the browser page.
+    # Leave the comparison section in view so the screenshot contains its
+    # actual rendered table/chart rather than only the dataset overview.
     page.get_by_text("Macro F1 by model", exact=True).scroll_into_view_if_needed()
-    # Streamlit charts render asynchronously and sometimes only when scrolled into view.
     page.wait_for_timeout(4000)
-    page.get_by_text("Dataset overview", exact=True).scroll_into_view_if_needed()
-    page.wait_for_timeout(1200)
-    page.screenshot(path=str(OUTPUT / "02_model_comparison.png"), full_page=True)
+    page.screenshot(path=str(OUTPUT / "02_model_comparison.png"), full_page=False)
     browser.close()
     print("Saved two real Streamlit screenshots to outputs/m3_app")
