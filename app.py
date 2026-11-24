@@ -86,6 +86,18 @@ with analyze_tab:
             "The interface is ready, but trained model files have not been connected yet. "
             "Once the ML team exports its pipelines, predictions will become available."
         )
+        with st.expander("How to enable real model predictions"):
+            st.write(
+                "On a machine with the seed-49 dataset, run the training scripts below. "
+                "They create the real trained model files locally. The sample CSV and "
+                "model artifacts are not currently committed to GitHub."
+            )
+            st.code(
+                "python scripts/prepare_data.py\n"
+                "python scripts/train_m2_baselines.py\n"
+                "python scripts/train_neural_network.py",
+                language="bash",
+            )
     elif len(ready) < 2:
         st.warning("Only one model is connected. The M3 demonstration requires at least two.")
 
@@ -140,8 +152,38 @@ with comparison_tab:
             rows = metrics_data.get("models", [])
             if not isinstance(rows, list) or not rows:
                 raise ValueError("Expected a nonempty 'models' list")
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-            st.caption("Results supplied by the ML team on the shared held-out test set.")
+            results = pd.DataFrame(rows)
+            fields = ["model", "accuracy", "macro_precision", "macro_recall", "macro_f1", "training_seconds"]
+            available_fields = [field for field in fields if field in results.columns]
+            display = results[available_fields].copy()
+            percent_columns = ("accuracy", "macro_precision", "macro_recall", "macro_f1")
+            for metric in percent_columns:
+                if metric in display.columns:
+                    display[metric] = display[metric].map(lambda value: f"{value:.2%}")
+            if "training_seconds" in display.columns:
+                display["training_seconds"] = display["training_seconds"].map(
+                    lambda value: f"{value:,.2f}"
+                )
+            display = display.rename(
+                columns={
+                    "model": "Model",
+                    "accuracy": "Accuracy",
+                    "macro_precision": "Macro precision",
+                    "macro_recall": "Macro recall",
+                    "macro_f1": "Macro F1",
+                    "training_seconds": "Train (s)",
+                }
+            )
+            st.dataframe(display, width=950, hide_index=True, height=236)
+            if {"model", "macro_f1"}.issubset(results.columns):
+                st.markdown("#### Macro F1 by model")
+                chart_data = results.set_index("model")[["macro_f1"]].sort_values("macro_f1")
+                st.bar_chart(chart_data)
+            st.caption(
+                "Team-reported metrics on the shared held-out test set; DistilBERT "
+                "was evaluated for the report but is not currently served by this app. "
+                "Training times use different hardware."
+            )
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             st.warning(f"Could not display model metrics: {exc}")
     else:

@@ -23,3 +23,11 @@ AI assistance (Claude Code) was used to install PyTorch and Hugging Face
 Transformers and to help write the neural network and DistilBERT code, their
 training scripts, and their tests. All results come from actually running the
 code; none were made up.
+
+## M3 Streamlit reporting improvements
+
+AI assistance was used to connect the Streamlit comparison tab to the team's
+reported M3 model metrics, add a macro-F1 chart and model-setup guidance,
+and write an app handoff checklist. The metrics were taken from the
+team's M3 report; no models were trained for this UI update and no
+screenshots or predictions were fabricated.

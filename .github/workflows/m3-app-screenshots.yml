@@ -1,0 +1,102 @@
+name: M3 real Streamlit app screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/m3-streamlit-dashboard-report
+    paths:
+      - .github/workflows/m3-app-screenshots.yml
+
+permissions:
+  contents: read
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install runtime, training, and browser dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install streamlit==1.67.0 pandas==2.3.3 numpy==2.5.5 scikit-learn==1.9.1 matplotlib==3.11.2 seaborn==0.13.2 joblib==1.6.0 playwright
+          python -m playwright install --with-deps chromium
+      - name: Download original public Kaggle dataset (not committed)
+        shell: bash
+        run: |
+          mkdir -p data
+          curl --fail --location --retry 3 --retry-delay 5 --max-time 500 \
+            "https://www.kaggle.com/api/v1/datasets/download/snap/amazon-fine-food-reviews" \
+            --output /tmp/amazon-food-reviews.zip
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile("/tmp/amazon-food-reviews.zip") as z:
+              name = next((n for n in z.namelist() if n.split("/")[-1] == "Reviews.csv"), None)
+              if not name:
+                  raise RuntimeError("Kaggle archive does not contain Reviews.csv")
+              with z.open(name) as source, open("data/Reviews.csv", "wb") as out:
+                  import shutil
+                  shutil.copyfileobj(source, out)
+          print("Reviews.csv extracted locally; dataset stays out of Git")
+          PY
+      - name: Verify seed-49 sample and train two real models
+        run: |
+          python scripts/prepare_data.py
+          python - <<'PY'
+          import pandas as pd
+          df = pd.read_csv("data/group_sample_seed49.csv")
+          expected = {1: 0, 2: 0, 3: 3734, 4: 0, 5: 0}
+          assert len(df) == 50000, f"Unexpected sample size {len(df)}"
+          assert (df.Score >= 4).sum() == 39082, "Positive class mismatch; dataset differs from team's source"
+          assert (df.Score <= 2).sum() == 7184, "Negative class mismatch; dataset differs from team's source"
+          assert df.duplicated(subset="Text").sum() == 3609, "Duplicate count mismatch"
+          print("Verified team source distribution and duplicate count.")
+          PY
+          python scripts/train_m2_baselines.py
+      - name: Verify real model predictions through the app adapter
+        run: |
+          python - <<'PY'
+          import joblib
+          from pathlib import Path
+          from src.model_service import load_registry, predict_review
+          specs = load_registry(Path("config/model_registry.json"), Path.cwd())
+          ready = [s for s in specs if s.artifact_path.exists()]
+          assert len(ready) >= 2, f"Need at least two real model artifacts; found {len(ready)}"
+          for spec in ready:
+              model = joblib.load(spec.artifact_path)
+              result = predict_review(model, spec, "These crackers taste delicious and arrived fresh.")
+              print(spec.name, result.label, result.confidence)
+          PY
+      - name: Start Streamlit
+        run: |
+          (python -m streamlit run app.py --server.headless true --server.port 8501 > /tmp/streamlit.log 2>&1 &)
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/streamlit.log
+          exit 1
+      - name: Capture real Streamlit screenshots
+        run: |
+          mkdir -p outputs/m3_app
+          python scripts/capture_streamlit_screenshots.py
+      - name: Upload screenshots and trained pipelines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m3-real-app-evidence
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            outputs/m3_app/
+            models/*.joblib
+            /tmp/streamlit.log
+
+# Re-run after scrolling screenshot to model comparison metrics.
