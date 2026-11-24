@@ -61,6 +61,17 @@ On Windows, activate with `.venv\Scripts\activate`.
 
 The app loads the trained models listed in `config/model_registry.json`. Run the Milestone 2 and Milestone 3 commands below first so the model files exist in `models/`.
 
+The **Dataset & model results** tab reads the team-reported M3 comparison
+from `report/model_metrics.json` and shows a macro-F1 comparison chart.
+The reported five-model table includes DistilBERT, which was evaluated for
+the report but **is not one of the models served by this application**.
+For the required real prediction demo, at least two trained local model
+artifacts must exist in `models/`. These binary files are excluded from Git,
+so a fresh checkout does not include live predictions.
+
+See [M3 app handoff and screenshot checklist](docs/M3_APP_HANDOFF.md).
+
+
 ## Reproduce Milestone 2
 
 After placing the Kaggle `Reviews.csv` file in `data/`, run:
