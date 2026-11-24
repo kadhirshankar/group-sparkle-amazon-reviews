@@ -42,7 +42,7 @@ def calculate_metrics(name, y_true, y_pred, seconds):
     }
 
 
-def save_confusion_matrix(name, y_true, y_pred, output_dir: Path) -> None:
+def save_confusion_matrix(name, y_true, y_pred, output_dir: Path, title=None) -> None:
     """Save a confusion matrix as both CSV and a report-ready PNG."""
     matrix = confusion_matrix(y_true, y_pred, labels=LABELS)
     pd.DataFrame(matrix, index=LABELS, columns=LABELS).to_csv(
@@ -51,7 +51,7 @@ def save_confusion_matrix(name, y_true, y_pred, output_dir: Path) -> None:
     fig, ax = plt.subplots(figsize=(7, 5.5))
     sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues", cbar=False, ax=ax)
     ax.set(
-        title=f"{name.replace('_', ' ').title()} Confusion Matrix",
+        title=title or f"{name.replace('_', ' ').title()} Confusion Matrix",
         xlabel="Predicted sentiment",
         ylabel="Actual sentiment",
     )
