@@ -155,7 +155,26 @@ with comparison_tab:
             results = pd.DataFrame(rows)
             fields = ["model", "accuracy", "macro_precision", "macro_recall", "macro_f1", "training_seconds"]
             available_fields = [field for field in fields if field in results.columns]
-            st.dataframe(results[available_fields], use_container_width=True, hide_index=True)
+            display = results[available_fields].copy()
+            percent_columns = ("accuracy", "macro_precision", "macro_recall", "macro_f1")
+            for metric in percent_columns:
+                if metric in display.columns:
+                    display[metric] = display[metric].map(lambda value: f"{value:.2%}")
+            if "training_seconds" in display.columns:
+                display["training_seconds"] = display["training_seconds"].map(
+                    lambda value: f"{value:,.2f}"
+                )
+            display = display.rename(
+                columns={
+                    "model": "Model",
+                    "accuracy": "Accuracy",
+                    "macro_precision": "Macro precision",
+                    "macro_recall": "Macro recall",
+                    "macro_f1": "Macro F1",
+                    "training_seconds": "Train (s)",
+                }
+            )
+            st.dataframe(display, width=950, hide_index=True, height=236)
             if {"model", "macro_f1"}.issubset(results.columns):
                 st.markdown("#### Macro F1 by model")
                 chart_data = results.set_index("model")[["macro_f1"]].sort_values("macro_f1")
