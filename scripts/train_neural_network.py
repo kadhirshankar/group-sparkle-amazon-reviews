@@ -101,10 +101,10 @@ def train_model(train_data, val_data, hidden1=256, hidden2=64, dropout=0.3, lr=1
     return model, history
 
 
-def save_loss_curves(history, output_dir):
+def save_loss_curves(history, output_dir, name, title):
     """Training vs validation loss (left) and validation macro F1 (right), per epoch."""
     df = pd.DataFrame(history)
-    df.to_csv(output_dir / "feedforward_nn_tfidf_history.csv", index=False)
+    df.to_csv(output_dir / f"{name}_history.csv", index=False)
     best = df.loc[df["val_macro_f1"].idxmax(), "epoch"]
 
     fig, (left, right) = plt.subplots(1, 2, figsize=(11, 4.5))
@@ -117,9 +117,9 @@ def save_loss_curves(history, output_dir):
         ax.set_xticks(df["epoch"])
         ax.axvline(best, color="gray", linestyle="--", label=f"Kept epoch ({best})")
         ax.legend()
-    fig.suptitle("Feedforward Neural Network (TF-IDF)")
+    fig.suptitle(title)
     fig.tight_layout()
-    fig.savefig(output_dir / "feedforward_nn_tfidf_loss_curves.png", dpi=200)
+    fig.savefig(output_dir / f"{name}_loss_curves.png", dpi=200)
     plt.close(fig)
 
 
@@ -171,7 +171,7 @@ def main():
     pd.DataFrame(report).transpose().to_csv(args.output_dir / f"{name}_class_report.csv")
     save_confusion_matrix(name, y_true, y_pred, args.output_dir,
                           title="Feedforward Neural Network (TF-IDF) Confusion Matrix")
-    save_loss_curves(history, args.output_dir)
+    save_loss_curves(history, args.output_dir, name, "Feedforward Neural Network (TF-IDF)")
 
     pipeline = export_pipeline(model, vectorizer, X_test, test_texts)
     args.models_dir.mkdir(parents=True, exist_ok=True)
