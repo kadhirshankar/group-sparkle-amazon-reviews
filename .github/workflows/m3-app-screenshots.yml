@@ -99,4 +99,4 @@ jobs:
             models/*.joblib
             /tmp/streamlit.log
 
-# Re-run after dashboard width and chart-capture improvements.
+# Re-run after scrolling screenshot to model comparison metrics.
