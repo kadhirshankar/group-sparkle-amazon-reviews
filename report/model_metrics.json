@@ -1,0 +1,49 @@
+{
+  "source": "Group Sparkle M3 comparison table (team-reported held-out test metrics)",
+  "source_sample_size": 50000,
+  "test_rows": 9279,
+  "split_seed": 49,
+  "note": "Training times are hardware-dependent. DistilBERT was trained on Apple M3 Pro GPU; other models on CPU.",
+  "models": [
+    {
+      "model": "Majority-Class Baseline",
+      "accuracy": 0.7814,
+      "macro_precision": 0.2605,
+      "macro_recall": 0.3333,
+      "macro_f1": 0.2924,
+      "training_seconds": 2.42
+    },
+    {
+      "model": "Multinomial Naive Bayes (BoW)",
+      "accuracy": 0.8157,
+      "macro_precision": 0.6124,
+      "macro_recall": 0.6551,
+      "macro_f1": 0.6301,
+      "training_seconds": 2.49
+    },
+    {
+      "model": "Logistic Regression (TF-IDF)",
+      "accuracy": 0.7974,
+      "macro_precision": 0.6098,
+      "macro_recall": 0.6892,
+      "macro_f1": 0.6331,
+      "training_seconds": 3.35
+    },
+    {
+      "model": "Feedforward Neural Network (TF-IDF)",
+      "accuracy": 0.791,
+      "macro_precision": 0.6009,
+      "macro_recall": 0.6865,
+      "macro_f1": 0.6268,
+      "training_seconds": 7.53
+    },
+    {
+      "model": "DistilBERT (Fine-Tuned)",
+      "accuracy": 0.8321,
+      "macro_precision": 0.6625,
+      "macro_recall": 0.7539,
+      "macro_f1": 0.6888,
+      "training_seconds": 1526.8
+    }
+  ]
+}
