@@ -46,7 +46,7 @@ We plan to compare machine learning models for classifying Amazon food reviews a
 
 ## Run Locally
 
-Requires Python 3.14 (see `.python-version`).
+Requires Python 3.14 (see `.python-version`). The app installs only the lightweight runtime packages in `requirements.txt`. To retrain models, also install `requirements-training.txt`.
 
 ```sh
 python3 -m venv .venv
@@ -57,17 +57,17 @@ python -m streamlit run app.py
 
 On Windows, activate with `.venv\Scripts\activate`.
 
-`requirements.txt` includes PyTorch (`torch`), which is used to train the neural network model. It is a large download (a few hundred MB), so the first install takes a few minutes. Training runs on the CPU; no GPU is needed.
+The deployed Streamlit app does **not** require PyTorch or Hugging Face Transformers. To retrain the team's classical, neural, and DistilBERT models, first run `python -m pip install -r requirements-training.txt`. Model training runs locally; the public app only loads fitted models.
 
-The app loads the trained models listed in `config/model_registry.json`. Run the Milestone 2 and Milestone 3 commands below first so the model files exist in `models/`.
+For deployment, the two verified classical models automatically download from the team's [checksum-verified GitHub release](https://github.com/kadhirshankar/group-sparkle-amazon-reviews/releases/tag/m4-seed49-verified-v1). Downloaded models are checked against exact SHA-256 values in `src/model_artifacts.py` before being loaded. The optional feedforward neural model can still be trained locally using the commands below, but is not required for the deployed two-model demo. No dataset CSV is shipped in the app.
 
 The **Dataset & model results** tab reads the team-reported M3 comparison
 from `report/model_metrics.json` and shows a macro-F1 comparison chart.
 The reported five-model table includes DistilBERT, which was evaluated for
 the report but **is not one of the models served by this application**.
-For the required real prediction demo, at least two trained local model
-artifacts must exist in `models/`. These binary files are excluded from Git,
-so a fresh checkout does not include live predictions.
+The two classical models are now available from GitHub Releases, so a fresh
+checkout can make real predictions without a local Kaggle CSV. The trained
+feedforward neural artifact is optional for local use only.
 
 See [M3 app handoff and screenshot checklist](docs/M3_APP_HANDOFF.md).
 
@@ -105,6 +105,8 @@ This fine-tunes the pretrained `distilbert-base-uncased` model (Hugging Face Tra
 
 ## Links
 
-**Shared document:**
+**Shared document:** https://docs.google.com/document/d/1HP2zxPhRQ9PAxWdidu5RLEmWWBOjoxWcxOxiRcMLlnM/edit
 
-**Live app:**
+**Live app:** Not yet deployed; add the verified `.streamlit.app` link here after creating the app in Community Cloud.
+
+**Deployment guide:** [docs/STREAMLIT_CLOUD_DEPLOYMENT.md](docs/STREAMLIT_CLOUD_DEPLOYMENT.md)

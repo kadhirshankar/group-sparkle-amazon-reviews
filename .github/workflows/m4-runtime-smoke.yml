@@ -1,0 +1,73 @@
+name: M4 cloud runtime smoke test
+on:
+  push:
+    branches: [feature/m4-streamlit-deployment]
+    paths:
+      - .github/workflows/m4-runtime-smoke.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+      - name: Install deployment-only dependencies and browser
+        run: |
+          python -m pip install -r requirements.txt playwright
+          python -m playwright install --with-deps chromium
+      - name: Run offline model and reporting tests
+        run: |
+          python -m unittest discover -s tests -p 'test_model_artifacts.py' -v
+          python -m unittest discover -s tests -p 'test_model_service.py' -v
+          python -m unittest discover -s tests -p 'test_m3_report_metrics.py' -v
+          python -m py_compile app.py src/model_service.py src/model_artifacts.py
+      - name: Load verified release models without local CSV or PyTorch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import joblib
+          from src.model_artifacts import ensure_model_artifact
+          from src.model_service import load_registry, predict_review
+          registry = load_registry(Path('config/model_registry.json'), Path.cwd())
+          count = 0
+          for spec in registry:
+              if ensure_model_artifact(spec.artifact_path):
+                  print('Downloaded checksum-verified', spec.name)
+              if not spec.artifact_path.exists():
+                  continue
+              model = joblib.load(spec.artifact_path)
+              result = predict_review(model, spec, 'The snack tastes fresh and delicious.')
+              print(spec.name, result.label, result.confidence)
+              count += 1
+          assert count >= 2, f'Expected two trained pipelines; found {count}'
+          print('Verified real model predictions using lean runtime requirements')
+          PY
+      - name: Run Streamlit using the deployment dependency set
+        run: |
+          (python -m streamlit run app.py --server.headless true --server.port 8501 > /tmp/streamlit.log 2>&1 &)
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/streamlit.log
+          exit 1
+      - name: Verify live UI with real side-by-side predictions
+        run: |
+          python scripts/capture_streamlit_screenshots.py
+      - name: Upload deployment smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m4-cloud-runtime-evidence
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            outputs/m3_app/*.png
+            /tmp/streamlit.log

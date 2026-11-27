@@ -1,0 +1,48 @@
+name: Publish verified M4 model artifacts
+
+on:
+  push:
+    branches: [feature/m4-streamlit-deployment]
+    paths:
+      - .github/workflows/publish-m4-models.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve independently tested seed-49 models
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/evidence models
+          gh run download 45503952149 --repo "$GITHUB_REPOSITORY" -n m3-real-app-evidence -D /tmp/evidence
+          NB=$(find /tmp/evidence -name multinomial_naive_bayes_bow_pipeline.joblib -type f -print -quit)
+          LR=$(find /tmp/evidence -name logistic_regression_tfidf_pipeline.joblib -type f -print -quit)
+          test -n "$NB" && test -n "$LR"
+          cp "$NB" models/multinomial_naive_bayes_bow_pipeline.joblib
+          cp "$LR" models/logistic_regression_tfidf_pipeline.joblib
+          echo '2e0df98822add52e0d74f53c0e1e3172de2b5dbe5ce395b27a6c277719f305a3  models/multinomial_naive_bayes_bow_pipeline.joblib' | sha256sum -c -
+          echo '85782818206e536afbf5e5acc71bef738c3c51a8992dd53dc393a2130ef0adcb  models/logistic_regression_tfidf_pipeline.joblib' | sha256sum -c -
+      - name: Publish trusted release if not already published
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: m4-seed49-verified-v1
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Verified model release already exists; refusing to overwrite it"
+            exit 0
+          fi
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target main \
+            --title 'Group Sparkle - verified seed-49 classical models' \
+            --notes 'Fitted scikit-learn vectorizer + classifier pipelines reproduced on the official seed-49 Amazon Fine Food Reviews sample. Source: successful M3 end-to-end test run 45503952149. Checksums are pinned in src/model_artifacts.py. No review CSV is included.' \
+            models/multinomial_naive_bayes_bow_pipeline.joblib \
+            models/logistic_regression_tfidf_pipeline.joblib
