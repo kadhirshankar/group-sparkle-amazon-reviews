@@ -107,6 +107,6 @@ This fine-tunes the pretrained `distilbert-base-uncased` model (Hugging Face Tra
 
 **Shared document:** https://docs.google.com/document/d/1HP2zxPhRQ9PAxWdidu5RLEmWWBOjoxWcxOxiRcMLlnM/edit
 
-**Live app:** Not yet deployed; add the verified `.streamlit.app` link here after creating the app in Community Cloud.
+**Live app:** https://group-sparkle-amazon-reviews-cpxkdw3k7qspxcssk2glkh.streamlit.app/ (Streamlit Community Cloud; two trained classical models loaded in deployment screenshot, November 26, 2026).
 
 **Deployment guide:** [docs/STREAMLIT_CLOUD_DEPLOYMENT.md](docs/STREAMLIT_CLOUD_DEPLOYMENT.md)
