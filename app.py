@@ -10,6 +10,7 @@ import pandas as pd
 import streamlit as st
 
 from src.model_service import ModelSpec, load_registry, predict_review
+from src.model_artifacts import ensure_model_artifact
 
 
 ROOT = Path(__file__).resolve().parent
@@ -30,7 +31,17 @@ def model_states(specs: list[ModelSpec]):
     unavailable = []
     for spec in specs:
         if not spec.artifact_path.is_file():
-            unavailable.append((spec, "Model artifact not yet available"))
+            try:
+                ensure_model_artifact(spec.artifact_path)
+            except Exception as exc:
+                unavailable.append(
+                    (spec, f"Verified model download failed: {type(exc).__name__}: {exc}")
+                )
+                continue
+        if not spec.artifact_path.is_file():
+            unavailable.append(
+                (spec, "Optional model not published as a hosted artifact")
+            )
             continue
         try:
             model = load_pipeline(str(spec.artifact_path), spec.artifact_path.stat().st_mtime_ns)
@@ -88,9 +99,9 @@ with analyze_tab:
         )
         with st.expander("How to enable real model predictions"):
             st.write(
-                "On a machine with the seed-49 dataset, run the training scripts below. "
-                "They create the real trained model files locally. The sample CSV and "
-                "model artifacts are not currently committed to GitHub."
+                "The two classical pipelines normally download automatically from "
+                "our checksum-verified GitHub release. If the host cannot reach GitHub, "
+                "you can generate the models locally with these commands."
             )
             st.code(
                 "python scripts/prepare_data.py\n"
@@ -99,7 +110,7 @@ with analyze_tab:
                 language="bash",
             )
     elif len(ready) < 2:
-        st.warning("Only one model is connected. The M3 demonstration requires at least two.")
+        st.warning("Only one model is connected. At least two trained models are needed for the live demonstration.")
 
     submitted = st.button("Analyze sentiment", type="primary", disabled=not ready)
     if submitted:
