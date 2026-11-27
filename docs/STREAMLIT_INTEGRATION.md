@@ -82,3 +82,14 @@ To run the model adapter unit tests:
 - [ ] Integrate real model files; test predictions and probability displays.
 - [ ] Add evaluated metrics and error analysis from the ML team.
 - [ ] Deploy a working app, verify it, and capture screenshots for M3.
+
+## M4 deployment update
+
+The prior M3 deployment blocker is resolved for the **two classical models**:
+checksum-verified public model artifacts are now available from the pinned
+GitHub release `m4-seed49-verified-v1`. Missing classical models download at
+first Streamlit startup, are validated against the SHA-256 pins in
+`src/model_artifacts.py`, then load into the fitted sklearn pipelines. The raw
+review data never ships to the app. The feedforward neural model remains
+optional and local-only. See `docs/STREAMLIT_CLOUD_DEPLOYMENT.md` for Cloud
+account setup and the final live-demo checklist.
