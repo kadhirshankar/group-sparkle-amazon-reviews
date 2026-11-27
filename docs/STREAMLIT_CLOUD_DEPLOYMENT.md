@@ -1,6 +1,9 @@
 # Deploy Group Sparkle to Streamlit Community Cloud
 
 ## Status
+Public Streamlit app launched: https://group-sparkle-amazon-reviews-cpxkdw3k7qspxcssk2glkh.streamlit.app/
+The November 26 deployment screenshot shows **2 / 3** registered models ready: Multinomial Naive Bayes (BoW) and Logistic Regression (TF-IDF). The optional feedforward neural network is not currently hosted. A live public prediction click still needs a final browser check.
+
 The classical-model release exists and its checksums are pinned in `src/model_artifacts.py`.
 The app can download and verify its **two real trained model pipelines** on a
 fresh checkout. Neither the raw Amazon CSV nor full training libraries are
