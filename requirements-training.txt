@@ -1,0 +1,7 @@
+# For reproducing ALL model-training and figure-generating scripts.
+# Streamlit Community Cloud installs only the lean runtime requirements.txt.
+-r requirements.txt
+matplotlib==3.11.2
+seaborn==0.13.2
+torch==2.15.0
+transformers==5.24.0
