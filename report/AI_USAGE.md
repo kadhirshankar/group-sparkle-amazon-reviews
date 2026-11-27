@@ -31,3 +31,11 @@ reported M3 model metrics, add a macro-F1 chart and model-setup guidance,
 and write an app handoff checklist. The metrics were taken from the
 team's M3 report; no models were trained for this UI update and no
 screenshots or predictions were fabricated.
+
+## M4 deployment work
+
+AI assistance was used to configure a versioned GitHub release for two
+previously verified seed-49 classical model pipelines, implement SHA-256
+verification before downloading model artifacts, split runtime from training
+dependencies, and add cloud-deployment documentation and tests. No review
+records were published, and no new model performance results were fabricated.
